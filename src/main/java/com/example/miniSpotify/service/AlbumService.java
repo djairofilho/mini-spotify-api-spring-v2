@@ -1,0 +1,53 @@
+package com.example.miniSpotify.service;
+
+import com.example.miniSpotify.exception.NotFoundException;
+import com.example.miniSpotify.model.Album;
+import com.example.miniSpotify.repository.AlbumRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class AlbumService {
+
+    private final AlbumRepository albumRepository;
+    private final ArtistService artistService;
+
+    public AlbumService(AlbumRepository albumRepository, ArtistService artistService) {
+        this.albumRepository = albumRepository;
+        this.artistService = artistService;
+    }
+
+    public Album create(Album album) {
+        album.setArtista(artistService.getActiveEntity(album.getArtista().getId()));
+        return albumRepository.save(album);
+    }
+
+    public List<Album> findAll() {
+        return albumRepository.findAllByAtivoTrue();
+    }
+
+    public Album findById(Long id) {
+        return getActiveEntity(id);
+    }
+
+    public Album update(Long id, Album request) {
+        Album album = getActiveEntity(id);
+        album.setTitulo(request.getTitulo());
+        album.setDataLancamento(request.getDataLancamento());
+        album.setArtista(artistService.getActiveEntity(request.getArtista().getId()));
+        album.setAtivo(request.isAtivo());
+        return albumRepository.save(album);
+    }
+
+    public void delete(Long id) {
+        Album album = getActiveEntity(id);
+        album.setAtivo(false);
+        albumRepository.save(album);
+    }
+
+    public Album getActiveEntity(Long id) {
+        return albumRepository.findByIdAndAtivoTrue(id)
+                .orElseThrow(() -> new NotFoundException("Album nao encontrado"));
+    }
+}
