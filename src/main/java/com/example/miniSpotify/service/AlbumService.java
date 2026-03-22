@@ -19,7 +19,7 @@ public class AlbumService {
     }
 
     public Album create(Album album) {
-        album.setArtista(artistService.getActiveEntity(album.getArtista().getId()));
+        album.setArtista(artistService.getUsableEntity(album.getArtista().getId()));
         return albumRepository.save(album);
     }
 
@@ -35,7 +35,7 @@ public class AlbumService {
         Album album = getActiveEntity(id);
         album.setTitulo(request.getTitulo());
         album.setDataLancamento(request.getDataLancamento());
-        album.setArtista(artistService.getActiveEntity(request.getArtista().getId()));
+        album.setArtista(artistService.getUsableEntity(request.getArtista().getId()));
         album.setAtivo(request.isAtivo());
         return albumRepository.save(album);
     }
@@ -49,5 +49,11 @@ public class AlbumService {
     public Album getActiveEntity(Long id) {
         return albumRepository.findByIdAndAtivoTrue(id)
                 .orElseThrow(() -> new NotFoundException("Album nao encontrado"));
+    }
+
+    public Album getUsableEntity(Long id) {
+        Album album = getActiveEntity(id);
+        artistService.getUsableEntity(album.getArtista().getId());
+        return album;
     }
 }

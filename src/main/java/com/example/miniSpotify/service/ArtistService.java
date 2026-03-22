@@ -47,4 +47,8 @@ public class ArtistService {
         return artistRepository.findByIdAndAtivoTrue(id)
                 .orElseThrow(() -> new NotFoundException("Artista nao encontrado"));
     }
+
+    public Artist getUsableEntity(Long id) {
+        return getActiveEntity(id);
+    }
 }

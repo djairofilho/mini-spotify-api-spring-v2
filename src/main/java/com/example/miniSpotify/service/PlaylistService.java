@@ -52,7 +52,8 @@ public class PlaylistService {
 
     public Playlist addSong(Long playlistId, Long songId, Long userId) {
         Playlist playlist = getActiveEntity(playlistId);
-        Song song = songService.getActiveEntity(songId);
+        Song song = songService.getUsableEntity(songId);
+        userService.getUsableEntity(userId);
 
         if (!playlist.getUsuario().getId().equals(userId)) {
             throw new BusinessException("Apenas o dono da playlist pode adicionar musicas");

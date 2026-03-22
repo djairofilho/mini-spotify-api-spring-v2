@@ -40,7 +40,7 @@ public class PlaybackHistoryService {
     public PlaybackHistory update(Long id, PlaybackHistory request) {
         PlaybackHistory history = getActiveEntity(id);
         history.setUsuario(userService.getUsableEntity(request.getUsuario().getId()));
-        history.setMusica(songService.getActiveEntity(request.getMusica().getId()));
+        history.setMusica(songService.getUsableEntity(request.getMusica().getId()));
         history.setAtivo(request.isAtivo());
         return playbackHistoryRepository.save(history);
     }
@@ -58,6 +58,6 @@ public class PlaybackHistoryService {
 
     private void attachRelations(PlaybackHistory history) {
         history.setUsuario(userService.getUsableEntity(history.getUsuario().getId()));
-        history.setMusica(songService.getActiveEntity(history.getMusica().getId()));
+        history.setMusica(songService.getUsableEntity(history.getMusica().getId()));
     }
 }

@@ -56,8 +56,8 @@ public class SongService {
         song.setNumeroFaixa(request.getNumeroFaixa());
         song.setTotalReproducoes(request.getTotalReproducoes());
         song.setAtivo(request.isAtivo());
-        song.setAlbum(albumService.getActiveEntity(request.getAlbum().getId()));
-        song.setArtista(artistService.getActiveEntity(request.getArtista().getId()));
+        song.setAlbum(albumService.getUsableEntity(request.getAlbum().getId()));
+        song.setArtista(artistService.getUsableEntity(request.getArtista().getId()));
         return songRepository.save(song);
     }
 
@@ -68,11 +68,8 @@ public class SongService {
     }
 
     public String play(Long songId, Long userId) {
-        Song song = getActiveEntity(songId);
-        User user = userService.getActiveEntity(userId);
-        if (!user.isAtivo()) {
-            throw new BusinessException("Usuario inativo nao pode reproduzir musicas");
-        }
+        Song song = getUsableEntity(songId);
+        User user = userService.getUsableEntity(userId);
 
         song.setTotalReproducoes(song.getTotalReproducoes() + 1);
         songRepository.save(song);
@@ -94,9 +91,16 @@ public class SongService {
                 .orElseThrow(() -> new NotFoundException("Musica nao encontrada"));
     }
 
+    public Song getUsableEntity(Long id) {
+        Song song = getActiveEntity(id);
+        albumService.getUsableEntity(song.getAlbum().getId());
+        artistService.getUsableEntity(song.getArtista().getId());
+        return song;
+    }
+
     private void attachRelations(Song song) {
-        song.setAlbum(albumService.getActiveEntity(song.getAlbum().getId()));
-        song.setArtista(artistService.getActiveEntity(song.getArtista().getId()));
+        song.setAlbum(albumService.getUsableEntity(song.getAlbum().getId()));
+        song.setArtista(artistService.getUsableEntity(song.getArtista().getId()));
         if (song.getTotalReproducoes() == null) {
             song.setTotalReproducoes(0L);
         }
