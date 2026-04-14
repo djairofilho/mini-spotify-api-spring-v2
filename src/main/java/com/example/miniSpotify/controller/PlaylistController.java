@@ -1,6 +1,8 @@
 package com.example.miniSpotify.controller;
 
-import com.example.miniSpotify.model.Playlist;
+import com.example.miniSpotify.dto.DtoMapper;
+import com.example.miniSpotify.dto.PlaylistRequest;
+import com.example.miniSpotify.dto.PlaylistResponse;
 import com.example.miniSpotify.service.PlaylistService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -20,23 +22,25 @@ public class PlaylistController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Playlist create(@Valid @RequestBody Playlist playlist) {
-        return playlistService.create(playlist);
+    public PlaylistResponse create(@Valid @RequestBody PlaylistRequest request) {
+        return DtoMapper.toResponse(playlistService.create(DtoMapper.toEntity(request)));
     }
 
     @GetMapping
-    public List<Playlist> findAll() {
-        return playlistService.findAll();
+    public List<PlaylistResponse> findAll() {
+        return playlistService.findAll().stream()
+                .map(DtoMapper::toResponse)
+                .toList();
     }
 
     @GetMapping("/{id}")
-    public Playlist findById(@PathVariable Long id) {
-        return playlistService.findById(id);
+    public PlaylistResponse findById(@PathVariable Long id) {
+        return DtoMapper.toResponse(playlistService.findById(id));
     }
 
     @PutMapping("/{id}")
-    public Playlist update(@PathVariable Long id, @Valid @RequestBody Playlist playlist) {
-        return playlistService.update(id, playlist);
+    public PlaylistResponse update(@PathVariable Long id, @Valid @RequestBody PlaylistRequest request) {
+        return DtoMapper.toResponse(playlistService.update(id, DtoMapper.toEntity(request)));
     }
 
     @DeleteMapping("/{id}")
@@ -46,11 +50,11 @@ public class PlaylistController {
     }
 
     @PostMapping("/{playlistId}/musicas/{musicaId}")
-    public Playlist addSong(
+    public PlaylistResponse addSong(
             @PathVariable Long playlistId,
             @PathVariable Long musicaId,
             @RequestHeader("X-USER-ID") Long userId
     ) {
-        return playlistService.addSong(playlistId, musicaId, userId);
+        return DtoMapper.toResponse(playlistService.addSong(playlistId, musicaId, userId));
     }
 }

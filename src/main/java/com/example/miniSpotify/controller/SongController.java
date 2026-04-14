@@ -1,6 +1,8 @@
 package com.example.miniSpotify.controller;
 
-import com.example.miniSpotify.model.Song;
+import com.example.miniSpotify.dto.DtoMapper;
+import com.example.miniSpotify.dto.SongRequest;
+import com.example.miniSpotify.dto.SongResponse;
 import com.example.miniSpotify.service.SongService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -20,23 +22,25 @@ public class SongController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Song create(@Valid @RequestBody Song song) {
-        return songService.create(song);
+    public SongResponse create(@Valid @RequestBody SongRequest request) {
+        return DtoMapper.toResponse(songService.create(DtoMapper.toEntity(request)));
     }
 
     @GetMapping
-    public List<Song> findAll() {
-        return songService.findAll();
+    public List<SongResponse> findAll() {
+        return songService.findAll().stream()
+                .map(DtoMapper::toResponse)
+                .toList();
     }
 
     @GetMapping("/{id}")
-    public Song findById(@PathVariable Long id) {
-        return songService.findById(id);
+    public SongResponse findById(@PathVariable Long id) {
+        return DtoMapper.toResponse(songService.findById(id));
     }
 
     @PutMapping("/{id}")
-    public Song update(@PathVariable Long id, @Valid @RequestBody Song song) {
-        return songService.update(id, song);
+    public SongResponse update(@PathVariable Long id, @Valid @RequestBody SongRequest request) {
+        return DtoMapper.toResponse(songService.update(id, DtoMapper.toEntity(request)));
     }
 
     @DeleteMapping("/{id}")

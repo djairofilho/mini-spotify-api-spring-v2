@@ -1,6 +1,8 @@
 package com.example.miniSpotify.controller;
 
-import com.example.miniSpotify.model.Album;
+import com.example.miniSpotify.dto.AlbumRequest;
+import com.example.miniSpotify.dto.AlbumResponse;
+import com.example.miniSpotify.dto.DtoMapper;
 import com.example.miniSpotify.service.AlbumService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -20,23 +22,25 @@ public class AlbumController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Album create(@Valid @RequestBody Album album) {
-        return albumService.create(album);
+    public AlbumResponse create(@Valid @RequestBody AlbumRequest request) {
+        return DtoMapper.toResponse(albumService.create(DtoMapper.toEntity(request)));
     }
 
     @GetMapping
-    public List<Album> findAll() {
-        return albumService.findAll();
+    public List<AlbumResponse> findAll() {
+        return albumService.findAll().stream()
+                .map(DtoMapper::toResponse)
+                .toList();
     }
 
     @GetMapping("/{id}")
-    public Album findById(@PathVariable Long id) {
-        return albumService.findById(id);
+    public AlbumResponse findById(@PathVariable Long id) {
+        return DtoMapper.toResponse(albumService.findById(id));
     }
 
     @PutMapping("/{id}")
-    public Album update(@PathVariable Long id, @Valid @RequestBody Album album) {
-        return albumService.update(id, album);
+    public AlbumResponse update(@PathVariable Long id, @Valid @RequestBody AlbumRequest request) {
+        return DtoMapper.toResponse(albumService.update(id, DtoMapper.toEntity(request)));
     }
 
     @DeleteMapping("/{id}")

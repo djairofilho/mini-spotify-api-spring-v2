@@ -1,6 +1,8 @@
 package com.example.miniSpotify.controller;
 
-import com.example.miniSpotify.model.PlaybackHistory;
+import com.example.miniSpotify.dto.DtoMapper;
+import com.example.miniSpotify.dto.PlaybackHistoryRequest;
+import com.example.miniSpotify.dto.PlaybackHistoryResponse;
 import com.example.miniSpotify.service.PlaybackHistoryService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -20,23 +22,25 @@ public class PlaybackHistoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PlaybackHistory create(@Valid @RequestBody PlaybackHistory playbackHistory) {
-        return playbackHistoryService.create(playbackHistory);
+    public PlaybackHistoryResponse create(@Valid @RequestBody PlaybackHistoryRequest request) {
+        return DtoMapper.toResponse(playbackHistoryService.create(DtoMapper.toEntity(request)));
     }
 
     @GetMapping
-    public List<PlaybackHistory> findAll() {
-        return playbackHistoryService.findAll();
+    public List<PlaybackHistoryResponse> findAll() {
+        return playbackHistoryService.findAll().stream()
+                .map(DtoMapper::toResponse)
+                .toList();
     }
 
     @GetMapping("/{id}")
-    public PlaybackHistory findById(@PathVariable Long id) {
-        return playbackHistoryService.findById(id);
+    public PlaybackHistoryResponse findById(@PathVariable Long id) {
+        return DtoMapper.toResponse(playbackHistoryService.findById(id));
     }
 
     @PutMapping("/{id}")
-    public PlaybackHistory update(@PathVariable Long id, @Valid @RequestBody PlaybackHistory playbackHistory) {
-        return playbackHistoryService.update(id, playbackHistory);
+    public PlaybackHistoryResponse update(@PathVariable Long id, @Valid @RequestBody PlaybackHistoryRequest request) {
+        return DtoMapper.toResponse(playbackHistoryService.update(id, DtoMapper.toEntity(request)));
     }
 
     @DeleteMapping("/{id}")

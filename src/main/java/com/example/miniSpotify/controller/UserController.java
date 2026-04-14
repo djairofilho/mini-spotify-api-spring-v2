@@ -1,6 +1,8 @@
 package com.example.miniSpotify.controller;
 
-import com.example.miniSpotify.model.User;
+import com.example.miniSpotify.dto.DtoMapper;
+import com.example.miniSpotify.dto.UserRequest;
+import com.example.miniSpotify.dto.UserResponse;
 import com.example.miniSpotify.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -20,23 +22,25 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public User create(@Valid @RequestBody User user) {
-        return userService.create(user);
+    public UserResponse create(@Valid @RequestBody UserRequest request) {
+        return DtoMapper.toResponse(userService.create(DtoMapper.toEntity(request)));
     }
 
     @GetMapping
-    public List<User> findAll() {
-        return userService.findAll();
+    public List<UserResponse> findAll() {
+        return userService.findAll().stream()
+                .map(DtoMapper::toResponse)
+                .toList();
     }
 
     @GetMapping("/{id}")
-    public User findById(@PathVariable Long id) {
-        return userService.findById(id);
+    public UserResponse findById(@PathVariable Long id) {
+        return DtoMapper.toResponse(userService.findById(id));
     }
 
     @PutMapping("/{id}")
-    public User update(@PathVariable Long id, @Valid @RequestBody User user) {
-        return userService.update(id, user);
+    public UserResponse update(@PathVariable Long id, @Valid @RequestBody UserRequest request) {
+        return DtoMapper.toResponse(userService.update(id, DtoMapper.toEntity(request)));
     }
 
     @DeleteMapping("/{id}")
