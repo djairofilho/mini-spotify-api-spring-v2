@@ -7,20 +7,31 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "users")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User extends BaseEntity {
 
+    @NotBlank(message = "Nome e obrigatorio")
     @Column(nullable = false)
     private String nome;
 
+    @NotBlank(message = "Email e obrigatorio")
+    @Email(message = "Email deve ser valido")
     @Column(nullable = false, unique = true)
     private String email;
 
+    @NotNull(message = "Tipo de plano e obrigatorio")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PlanType tipoPlano;
@@ -37,45 +48,4 @@ public class User extends BaseEntity {
             dataCriacao = LocalDateTime.now();
         }
     }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public PlanType getTipoPlano() {
-        return tipoPlano;
-    }
-
-    public void setTipoPlano(PlanType tipoPlano) {
-        this.tipoPlano = tipoPlano;
-    }
-
-    public boolean isAtivo() {
-        return ativo;
-    }
-
-    public void setAtivo(boolean ativo) {
-        this.ativo = ativo;
-    }
-
-    public LocalDateTime getDataCriacao() {
-        return dataCriacao;
-    }
-
-    public void setDataCriacao(LocalDateTime dataCriacao) {
-        this.dataCriacao = dataCriacao;
-    }
-
 }

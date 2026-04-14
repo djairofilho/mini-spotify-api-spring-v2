@@ -10,16 +10,23 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "playlists")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Playlist extends BaseEntity {
 
+    @NotBlank(message = "Nome e obrigatorio")
     @Column(nullable = false)
     private String nome;
 
@@ -29,6 +36,7 @@ public class Playlist extends BaseEntity {
     @Column(nullable = false, updatable = false)
     private LocalDateTime dataCriacao;
 
+    @NotNull(message = "Usuario e obrigatorio")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User usuario;
@@ -49,53 +57,5 @@ public class Playlist extends BaseEntity {
         if (dataCriacao == null) {
             dataCriacao = LocalDateTime.now();
         }
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public boolean isPublica() {
-        return publica;
-    }
-
-    public void setPublica(boolean publica) {
-        this.publica = publica;
-    }
-
-    public LocalDateTime getDataCriacao() {
-        return dataCriacao;
-    }
-
-    public void setDataCriacao(LocalDateTime dataCriacao) {
-        this.dataCriacao = dataCriacao;
-    }
-
-    public User getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(User usuario) {
-        this.usuario = usuario;
-    }
-
-    public Set<Song> getMusicas() {
-        return musicas;
-    }
-
-    public void setMusicas(Set<Song> musicas) {
-        this.musicas = musicas;
-    }
-
-    public boolean isAtivo() {
-        return ativo;
-    }
-
-    public void setAtivo(boolean ativo) {
-        this.ativo = ativo;
     }
 }

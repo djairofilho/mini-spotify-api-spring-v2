@@ -8,18 +8,25 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "playback_history")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class PlaybackHistory extends BaseEntity {
 
+    @NotNull(message = "Usuario e obrigatorio")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User usuario;
 
+    @NotNull(message = "Musica e obrigatoria")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "song_id", nullable = false)
     private Song musica;
@@ -35,37 +42,5 @@ public class PlaybackHistory extends BaseEntity {
         if (dataReproducao == null) {
             dataReproducao = LocalDateTime.now();
         }
-    }
-
-    public User getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(User usuario) {
-        this.usuario = usuario;
-    }
-
-    public Song getMusica() {
-        return musica;
-    }
-
-    public void setMusica(Song musica) {
-        this.musica = musica;
-    }
-
-    public LocalDateTime getDataReproducao() {
-        return dataReproducao;
-    }
-
-    public void setDataReproducao(LocalDateTime dataReproducao) {
-        this.dataReproducao = dataReproducao;
-    }
-
-    public boolean isAtivo() {
-        return ativo;
-    }
-
-    public void setAtivo(boolean ativo) {
-        this.ativo = ativo;
     }
 }
