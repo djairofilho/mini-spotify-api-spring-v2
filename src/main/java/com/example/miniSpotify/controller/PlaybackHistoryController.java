@@ -2,6 +2,7 @@ package com.example.miniSpotify.controller;
 
 import com.example.miniSpotify.model.PlaybackHistory;
 import com.example.miniSpotify.service.PlaybackHistoryService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class PlaybackHistoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PlaybackHistory create(@RequestBody PlaybackHistory playbackHistory) {
+    public PlaybackHistory create(@Valid @RequestBody PlaybackHistory playbackHistory) {
         return playbackHistoryService.create(playbackHistory);
     }
 
@@ -34,7 +35,7 @@ public class PlaybackHistoryController {
     }
 
     @PutMapping("/{id}")
-    public PlaybackHistory update(@PathVariable Long id, @RequestBody PlaybackHistory playbackHistory) {
+    public PlaybackHistory update(@PathVariable Long id, @Valid @RequestBody PlaybackHistory playbackHistory) {
         return playbackHistoryService.update(id, playbackHistory);
     }
 

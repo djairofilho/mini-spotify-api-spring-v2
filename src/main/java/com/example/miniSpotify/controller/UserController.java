@@ -2,6 +2,7 @@ package com.example.miniSpotify.controller;
 
 import com.example.miniSpotify.model.User;
 import com.example.miniSpotify.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public User create(@RequestBody User user) {
+    public User create(@Valid @RequestBody User user) {
         return userService.create(user);
     }
 
@@ -34,7 +35,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public User update(@PathVariable Long id, @RequestBody User user) {
+    public User update(@PathVariable Long id, @Valid @RequestBody User user) {
         return userService.update(id, user);
     }
 

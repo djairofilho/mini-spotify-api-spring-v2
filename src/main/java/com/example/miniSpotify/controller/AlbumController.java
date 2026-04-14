@@ -2,6 +2,7 @@ package com.example.miniSpotify.controller;
 
 import com.example.miniSpotify.model.Album;
 import com.example.miniSpotify.service.AlbumService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class AlbumController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Album create(@RequestBody Album album) {
+    public Album create(@Valid @RequestBody Album album) {
         return albumService.create(album);
     }
 
@@ -34,7 +35,7 @@ public class AlbumController {
     }
 
     @PutMapping("/{id}")
-    public Album update(@PathVariable Long id, @RequestBody Album album) {
+    public Album update(@PathVariable Long id, @Valid @RequestBody Album album) {
         return albumService.update(id, album);
     }
 
