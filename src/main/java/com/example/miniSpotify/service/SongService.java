@@ -3,6 +3,8 @@ package com.example.miniSpotify.service;
 import com.example.miniSpotify.dto.TopSongResponse;
 import com.example.miniSpotify.exception.BusinessException;
 import com.example.miniSpotify.exception.NotFoundException;
+import com.example.miniSpotify.model.Album;
+import com.example.miniSpotify.model.Artist;
 import com.example.miniSpotify.model.PlaybackHistory;
 import com.example.miniSpotify.model.Song;
 import com.example.miniSpotify.model.User;
@@ -56,8 +58,8 @@ public class SongService {
         song.setNumeroFaixa(request.getNumeroFaixa());
         song.setTotalReproducoes(request.getTotalReproducoes());
         song.setAtivo(request.isAtivo());
-        song.setAlbum(albumService.getUsableEntity(request.getAlbum().getId()));
-        song.setArtista(artistService.getUsableEntity(request.getArtista().getId()));
+        song.setAlbum(albumService.getUsableEntity(getAlbumId(request.getAlbum())));
+        song.setArtista(artistService.getUsableEntity(getArtistId(request.getArtista())));
         return songRepository.save(song);
     }
 
@@ -99,10 +101,24 @@ public class SongService {
     }
 
     private void attachRelations(Song song) {
-        song.setAlbum(albumService.getUsableEntity(song.getAlbum().getId()));
-        song.setArtista(artistService.getUsableEntity(song.getArtista().getId()));
+        song.setAlbum(albumService.getUsableEntity(getAlbumId(song.getAlbum())));
+        song.setArtista(artistService.getUsableEntity(getArtistId(song.getArtista())));
         if (song.getTotalReproducoes() == null) {
             song.setTotalReproducoes(0L);
         }
+    }
+
+    private Long getAlbumId(Album album) {
+        if (album == null || album.getId() == null) {
+            throw new BusinessException("Id do album e obrigatorio");
+        }
+        return album.getId();
+    }
+
+    private Long getArtistId(Artist artist) {
+        if (artist == null || artist.getId() == null) {
+            throw new BusinessException("Id do artista e obrigatorio");
+        }
+        return artist.getId();
     }
 }

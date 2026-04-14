@@ -4,6 +4,7 @@ import com.example.miniSpotify.exception.BusinessException;
 import com.example.miniSpotify.exception.NotFoundException;
 import com.example.miniSpotify.model.Playlist;
 import com.example.miniSpotify.model.Song;
+import com.example.miniSpotify.model.User;
 import com.example.miniSpotify.repository.PlaylistRepository;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,7 @@ public class PlaylistService {
     }
 
     public Playlist create(Playlist playlist) {
-        playlist.setUsuario(userService.getUsableEntity(playlist.getUsuario().getId()));
+        playlist.setUsuario(userService.getUsableEntity(getUserId(playlist.getUsuario())));
         return playlistRepository.save(playlist);
     }
 
@@ -39,7 +40,7 @@ public class PlaylistService {
         Playlist playlist = getActiveEntity(id);
         playlist.setNome(request.getNome());
         playlist.setPublica(request.isPublica());
-        playlist.setUsuario(userService.getUsableEntity(request.getUsuario().getId()));
+        playlist.setUsuario(userService.getUsableEntity(getUserId(request.getUsuario())));
         playlist.setAtivo(request.isAtivo());
         return playlistRepository.save(playlist);
     }
@@ -72,5 +73,12 @@ public class PlaylistService {
     public Playlist getActiveEntity(Long id) {
         return playlistRepository.findByIdAndAtivoTrue(id)
                 .orElseThrow(() -> new NotFoundException("Playlist nao encontrada"));
+    }
+
+    private Long getUserId(User user) {
+        if (user == null || user.getId() == null) {
+            throw new BusinessException("Id do usuario e obrigatorio");
+        }
+        return user.getId();
     }
 }

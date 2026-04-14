@@ -1,7 +1,9 @@
 package com.example.miniSpotify.service;
 
+import com.example.miniSpotify.exception.BusinessException;
 import com.example.miniSpotify.exception.NotFoundException;
 import com.example.miniSpotify.model.Album;
+import com.example.miniSpotify.model.Artist;
 import com.example.miniSpotify.repository.AlbumRepository;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +21,7 @@ public class AlbumService {
     }
 
     public Album create(Album album) {
-        album.setArtista(artistService.getUsableEntity(album.getArtista().getId()));
+        album.setArtista(artistService.getUsableEntity(getArtistId(album.getArtista())));
         return albumRepository.save(album);
     }
 
@@ -35,7 +37,7 @@ public class AlbumService {
         Album album = getActiveEntity(id);
         album.setTitulo(request.getTitulo());
         album.setDataLancamento(request.getDataLancamento());
-        album.setArtista(artistService.getUsableEntity(request.getArtista().getId()));
+        album.setArtista(artistService.getUsableEntity(getArtistId(request.getArtista())));
         album.setAtivo(request.isAtivo());
         return albumRepository.save(album);
     }
@@ -55,5 +57,12 @@ public class AlbumService {
         Album album = getActiveEntity(id);
         artistService.getUsableEntity(album.getArtista().getId());
         return album;
+    }
+
+    private Long getArtistId(Artist artist) {
+        if (artist == null || artist.getId() == null) {
+            throw new BusinessException("Id do artista e obrigatorio");
+        }
+        return artist.getId();
     }
 }

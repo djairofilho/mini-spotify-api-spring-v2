@@ -1,7 +1,10 @@
 package com.example.miniSpotify.service;
 
+import com.example.miniSpotify.exception.BusinessException;
 import com.example.miniSpotify.exception.NotFoundException;
 import com.example.miniSpotify.model.PlaybackHistory;
+import com.example.miniSpotify.model.Song;
+import com.example.miniSpotify.model.User;
 import com.example.miniSpotify.repository.PlaybackHistoryRepository;
 import org.springframework.stereotype.Service;
 
@@ -39,8 +42,8 @@ public class PlaybackHistoryService {
 
     public PlaybackHistory update(Long id, PlaybackHistory request) {
         PlaybackHistory history = getActiveEntity(id);
-        history.setUsuario(userService.getUsableEntity(request.getUsuario().getId()));
-        history.setMusica(songService.getUsableEntity(request.getMusica().getId()));
+        history.setUsuario(userService.getUsableEntity(getUserId(request.getUsuario())));
+        history.setMusica(songService.getUsableEntity(getSongId(request.getMusica())));
         history.setAtivo(request.isAtivo());
         return playbackHistoryRepository.save(history);
     }
@@ -57,7 +60,21 @@ public class PlaybackHistoryService {
     }
 
     private void attachRelations(PlaybackHistory history) {
-        history.setUsuario(userService.getUsableEntity(history.getUsuario().getId()));
-        history.setMusica(songService.getUsableEntity(history.getMusica().getId()));
+        history.setUsuario(userService.getUsableEntity(getUserId(history.getUsuario())));
+        history.setMusica(songService.getUsableEntity(getSongId(history.getMusica())));
+    }
+
+    private Long getUserId(User user) {
+        if (user == null || user.getId() == null) {
+            throw new BusinessException("Id do usuario e obrigatorio");
+        }
+        return user.getId();
+    }
+
+    private Long getSongId(Song song) {
+        if (song == null || song.getId() == null) {
+            throw new BusinessException("Id da musica e obrigatorio");
+        }
+        return song.getId();
     }
 }
