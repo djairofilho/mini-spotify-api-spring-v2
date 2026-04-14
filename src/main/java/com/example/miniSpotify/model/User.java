@@ -1,6 +1,5 @@
 package com.example.miniSpotify.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -19,7 +18,6 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @Table(name = "users")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User extends BaseEntity {
 
     @NotBlank(message = "Nome e obrigatorio")

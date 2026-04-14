@@ -1,6 +1,5 @@
 package com.example.miniSpotify.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -23,7 +22,6 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "playlists")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Playlist extends BaseEntity {
 
     @NotBlank(message = "Nome e obrigatorio")
