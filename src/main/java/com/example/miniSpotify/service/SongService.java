@@ -56,7 +56,9 @@ public class SongService {
         song.setTitulo(request.getTitulo());
         song.setDuracaoSegundos(request.getDuracaoSegundos());
         song.setNumeroFaixa(request.getNumeroFaixa());
-        song.setTotalReproducoes(request.getTotalReproducoes());
+        if (request.getTotalReproducoes() != null) {
+            song.setTotalReproducoes(request.getTotalReproducoes());
+        }
         song.setAtivo(request.isAtivo());
         song.setAlbum(albumService.getUsableEntity(getAlbumId(request.getAlbum())));
         song.setArtista(artistService.getUsableEntity(getArtistId(request.getArtista())));
