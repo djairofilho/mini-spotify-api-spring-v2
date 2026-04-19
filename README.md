@@ -28,6 +28,78 @@ API REST em Spring Boot para simular um mini Spotify de forma direta, com foco e
 - `Playlist`
 - `PlaybackHistory`
 
+## Relacao entre tabelas (ERD)
+
+```mermaid
+erDiagram
+    USERS {
+        Long id PK
+        String nome
+        String email
+        String tipo_plano
+        boolean ativo
+        datetime data_criacao
+    }
+
+    ARTISTS {
+        Long id PK
+        String nome
+        String genero_musical
+        String pais_origem
+        boolean ativo
+    }
+
+    ALBUMS {
+        Long id PK
+        String titulo
+        date data_lancamento
+        boolean ativo
+        Long artist_id FK
+    }
+
+    SONGS {
+        Long id PK
+        String titulo
+        int duracao_segundos
+        int numero_faixa
+        Long total_reproducoes
+        boolean ativo
+        Long album_id FK
+        Long artist_id FK
+    }
+
+    PLAYLISTS {
+        Long id PK
+        String nome
+        boolean publica
+        datetime data_criacao
+        boolean ativo
+        Long user_id FK
+    }
+
+    PLAYLIST_SONGS {
+        Long playlist_id FK
+        Long song_id FK
+    }
+
+    PLAYBACK_HISTORY {
+        Long id PK
+        Long user_id FK
+        Long song_id FK
+        datetime data_reproducao
+        boolean ativo
+    }
+
+    ARTISTS ||--o{ ALBUMS : "1:N"
+    ALBUMS ||--o{ SONGS : "1:N"
+    ARTISTS ||--o{ SONGS : "1:N"
+    USERS ||--o{ PLAYLISTS : "1:N"
+    USERS ||--o{ PLAYBACK_HISTORY : "1:N"
+    SONGS ||--o{ PLAYBACK_HISTORY : "1:N"
+    PLAYLISTS ||--o{ PLAYLIST_SONGS : "1:N"
+    SONGS ||--o{ PLAYLIST_SONGS : "1:N"
+```
+
 Todas possuem CRUD completo. A exclusao e logica, usando o campo `ativo`.
 
 ## Regras de negocio implementadas
